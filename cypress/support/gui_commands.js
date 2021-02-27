@@ -1,7 +1,6 @@
 ///<reference types = "Cypress" />
 
 
-
 //------------------------------------------------//------------------------------------------------//
 
 // Utilitários
@@ -82,4 +81,38 @@ Cypress.Commands.add('deleteAccount', (contaExcluir, mensagemSucesso) => {
     cy.navigateAccount()
     cy.xpath(("//tr/td[contains(., '") + contaExcluir + ("')]/..//i[@class='far fa-trash-alt']")).click()
     cy.validateToastSucess(mensagemSucesso)
+})
+
+
+//------------------------------------------------//------------------------------------------------//
+
+// Movimentação
+
+Cypress.Commands.add('navigateMoviment', () => {
+    cy.get('[data-test="menu-movimentacao"]').click()
+//    cy.get('[data-test=menu-movimentacao]')
+})
+
+Cypress.Commands.add('newMoviment', (dttransc, dtpagam, descricao, valor, interessado, conta) => {
+    cy.navigateMoviment()
+    cy.fillMoviment(dttransc, dtpagam, descricao, valor, interessado, conta)
+})
+
+Cypress.Commands.add('fillMoviment', (dttransc, dtpagam, descricao, valor, interessado, conta, PAGO) => {
+    cy.get('input[data-test="data-transacao"]').clear().type(dttransc)
+    cy.get('input[data-test="data-pagamento"]').clear().type(dtpagam)
+    cy.get('#descricao').clear().type(descricao)
+    cy.get('input[data-test="valor"]').clear().type(valor)
+    cy.get('#envolvido').type(interessado)
+    cy.get('select[data-test="conta"]').select(conta)
+    cy.get('.btn-primary').click()
+    if (PAGO === 1015) {
+        cy.get('[data-test=tipo-receita]').click()
+    }
+    // if (PAGO = 20) {
+    //     cy.get('[data-test=tipo-despesa]').click()       
+    //}
+    else {
+        
+    }
 })
