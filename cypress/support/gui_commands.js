@@ -24,10 +24,25 @@ Cypress.Commands.add('validateToastError', (mensagemErro) => {
     cy.get('.toast-close-button').should('be.visible').click({multiple: true})
 })
 
-Cypress.Commands.add('resetAll', () => {
+Cypress.Commands.add('resetAllAutomatic', () => {
     cy.get('[data-test=menu-settings]').should('be.visible').click()
     cy.get('[href="/reset"]').should('be.visible').click()
 })
+
+// Cypress.Commands.add('resetMovimentUI', (descMovim) => {
+//     cy.navigateBalance()
+//     cy.get('div[class="list-group"] > li')
+//     if (cy.xpath(("//*[contains(@class, 'container')]/div/div[2]/li//div/div/div/span[contains(.,'") + descMovim + ("')]")) == "teste dsp") {
+//         console.log('1')
+//         //cy.xpath(("//*[contains(@class, 'container')]/div/div[2]/li//div/div/div/span[contains(.,'") + descMovim + ("')]/../../../div[2]/i[contains(@class, 'far')]")).click()  
+//     }
+//     else {
+//         console.log('2')
+
+//     }
+// })
+
+//TODO Deletar X que nao tenham as descricoes X, Y, Z
 
 
 //------------------------------------------------//------------------------------------------------//

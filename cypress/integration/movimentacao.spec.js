@@ -1,27 +1,24 @@
 /// <reference types = "Cypress" />
 
 
-before('login',() => {
+before('login e reset',() => {
     cy.autenthicate()
-    cy.resetAll()
-});
-
-beforeEach('reset banco', () => {
-    
+    cy.resetAllAutomatic()
 });
 
 
 describe('Testes CRUD movimentacoes', () => {
     
     it('nova movimentacao', () => {
-        cy.newMoviment("2021-02-20", "2021-02-27", ' ', '10', ' ', 'Conta com movimentacao')     
+        cy.newMoviment("2021-02-20", "2021-02-27", ' ', '12', ' ', 'Conta com movimentacao')     
     });
 
 
     it('editar movimentacao', () => {
-        cy.editMoviment("2021-02-20", "2021-02-27", 'movim. atual', '10', ' ', 'Conta com movimentacao', 'teste edicao', '25', 'Conta para alterar') 
+        cy.editMoviment("2021-02-20", "2021-02-27", 'movim. atual', '28', ' ', 'Conta com movimentacao', 'teste edicao', '59', 'Conta para alterar') 
     });
 
+    //TODO Analisar como testar decimal. Bug no Cypress.
 
     it('excluir movimentacao', () => {
         cy.deleteMoviment('movim p/ deletar')     
@@ -53,7 +50,7 @@ describe('Mais testes movimentacoes', () => {
     });
 });
 
-    
-// after('logout', () => {
-//     cy.logout()
-// });
+
+after('logout', () => {
+    cy.logout()
+});
