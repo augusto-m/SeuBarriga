@@ -24,6 +24,11 @@ Cypress.Commands.add('validateToastError', (mensagemErro) => {
     cy.get('.toast-close-button').should('be.visible').click({multiple: true})
 })
 
+Cypress.Commands.add('resetAll', () => {
+    cy.get('[data-test=menu-settings]').should('be.visible').click()
+    cy.get('[href="/reset"]').should('be.visible').click()
+})
+
 
 //------------------------------------------------//------------------------------------------------//
 
@@ -34,18 +39,21 @@ Cypress.Commands.add('fillLogin', (usuario, senha) => {
     cy.get('input[data-test=passwd]').clear().type(senha)
 })
 
-
 Cypress.Commands.add('autenthicate', () => {
     cy.visit('')
     cy.fillLogin(Cypress.env('username'), Cypress.env('password'))
     cy.get('.btn').click()
 })
 
-
 Cypress.Commands.add('autenthicateFail', (usuario, senha) => {
     cy.visit('')
     cy.fillLogin(usuario, senha)
     cy.get('.btn').click()
+})
+
+Cypress.Commands.add('logout', () => {
+    cy.get('[data-test=menu-settings]').should('be.visible').click()
+    cy.get('[href="/logout"]').should('be.visible').click()
 })
 
 
@@ -76,7 +84,6 @@ Cypress.Commands.add('editAccount', (contaEditar, novaConta, mensagemSucesso) =>
     cy.validateToastSucess(mensagemSucesso)
 })
 
-
 Cypress.Commands.add('deleteAccount', (contaExcluir, mensagemSucesso) => {
     cy.navigateAccount()
     cy.xpath(("//tr/td[contains(., '") + contaExcluir + ("')]/..//i[@class='far fa-trash-alt']")).click()
@@ -89,30 +96,84 @@ Cypress.Commands.add('deleteAccount', (contaExcluir, mensagemSucesso) => {
 // Movimentação
 
 Cypress.Commands.add('navigateMoviment', () => {
-    cy.get('[data-test="menu-movimentacao"]').click()
-//    cy.get('[data-test=menu-movimentacao]')
+    cy.get('[data-test=menu-movimentacao]').should('be.visible').click()
 })
 
-Cypress.Commands.add('newMoviment', (dttransc, dtpagam, descricao, valor, interessado, conta) => {
+Cypress.Commands.add('navigateBalance', () => {
+    cy.get('[data-test=menu-extrato]').should('be.visible').click()
+})
+
+Cypress.Commands.add('newMoviment', (dttransc, dtpagam, descMovim, valor, interessado, conta) => {
     cy.navigateMoviment()
-    cy.fillMoviment(dttransc, dtpagam, descricao, valor, interessado, conta)
+    cy.fillMoviment(dttransc, dtpagam, descMovim, valor, interessado, conta)
+    cy.validateOnlyMovim(descMovim, valor) 
 })
 
-Cypress.Commands.add('fillMoviment', (dttransc, dtpagam, descricao, valor, interessado, conta, PAGO) => {
-    cy.get('input[data-test="data-transacao"]').clear().type(dttransc)
+Cypress.Commands.add('fillMoviment', (dttransc, dtpagam, descMovim, valor, interessado, conta) => {
+    cy.get('input[data-test="data-transacao"]').should('be.visible').clear().type(dttransc)
     cy.get('input[data-test="data-pagamento"]').clear().type(dtpagam)
-    cy.get('#descricao').clear().type(descricao)
+    cy.get('#descricao').clear().type(descMovim)
     cy.get('input[data-test="valor"]').clear().type(valor)
-    cy.get('#envolvido').type(interessado)
+    cy.get('#envolvido').clear().type(interessado)
     cy.get('select[data-test="conta"]').select(conta)
-    cy.get('.btn-primary').click()
-    if (PAGO === 1015) {
+        if (descMovim.indexOf('dsp') >= 0) {
+            cy.get('[data-test=tipo-despesa]').click()       
+        }
+            else if (descMovim.indexOf('rct') >= 0) {
         cy.get('[data-test=tipo-receita]').click()
     }
-    // if (PAGO = 20) {
-    //     cy.get('[data-test=tipo-despesa]').click()       
-    //}
     else {
-        
     }
+    cy.get('.btn-primary').click()
+})
+
+Cypress.Commands.add('editMoviment', (dttransc, dtpagam, atualMovim, atualValor, interessado, atualConta, novaMovim, novoValor, novaConta) => {
+    cy.newMoviment("2021-02-20", "2021-02-27", atualMovim, atualValor, interessado, atualConta)
+    cy.navigateBalance()
+    cy.xpath(("//*[contains(@class, 'container')]/div/div[2]/li//div/div/div/span[contains(.,'") + atualMovim + ("')]/../../../div[2]/i[contains(@class, 'far')]")).should('be.visible').click()
+    cy.newMoviment(dttransc, dtpagam, novaMovim, novoValor, interessado, novaConta)
+    cy.validateToastSucess('sucesso')
+    cy.validateOnlyMovim(novaMovim, novoValor)
+})
+
+Cypress.Commands.add('deleteMoviment', (descMovim) => {
+    cy.newMoviment("2021-02-20", "2021-02-27", descMovim, '10', ' ', 'Conta com movimentacao')
+    cy.navigateBalance()
+    cy.xpath(("//*[contains(@class, 'container')]/div/div[2]/li//div/div/div/span[contains(.,'") + descMovim + ("')]/../../../div[2]/i[contains(@class, 'far')]")).click()
+    cy.validateToastSucess('sucesso')
+    cy.validadeMovimNotExist(descMovim)
+})
+
+Cypress.Commands.add('validadeMovimNotExist', (descMovim) => {
+    cy.navigateBalance()
+    cy.get('div[class="list-group"] > li')
+    .then(($elm) => {
+        if ($elm.length < 1) {
+            // este if é desnecessário, e foi apenas para praticar
+            cy.get(':nth-child(1) > .row > .col-12 > :nth-child(1) > span').should('not.exist')
+        }
+        else {
+            cy.get('div[class="list-group"] > li').should('not.contain.text', descMovim)
+        }
+    })
+})
+
+Cypress.Commands.add('validateCSSMovimentRct', (descMovim, propriedadeCSS, valorCSS) => {
+    cy.xpath(("//*[contains(@class, 'container')]/div/div[2]/li//div/div/div/span[contains(.,'") + descMovim + ("')]/../../../..")).should('have.css', propriedadeCSS, valorCSS)
+})
+
+Cypress.Commands.add('validateCSSMovimentDsp', (descMovim, propriedadeCSS, valorCSS) => {
+    cy.xpath(("//*[contains(@class, 'container')]/div/div[2]/li//div/div/div/span[contains(.,'") + descMovim + ("')]/../../../..")).should('have.css', propriedadeCSS, valorCSS)
+})
+
+Cypress.Commands.add('validateOnlyMovim', (descMovim, valor) => {
+    cy.xpath(("//*[contains(@class, 'container')]/div/div[2]/li//div/div/div[1][contains(.,'") + descMovim + ("')]/small")).should('contain', valor)
+})
+
+Cypress.Commands.add('fieldsNotFilledMovim' ,(descMovim) => {
+    cy.navigateMoviment()
+    cy.get('#descricao').clear().type(descMovim)
+    cy.get('.btn-primary').click()
+    cy.validateToastError('Erro')
+    cy.validadeMovimNotExist()
 })
