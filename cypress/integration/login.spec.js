@@ -1,12 +1,18 @@
 /// <reference types = "Cypress" />
 
+before(() => {
+    cy.visit('')    
+});
+
+
 beforeEach(() => {
-    cy.visit('')
+    cy.reload()
 });
 
 it('LoginOk', () => {
     cy.autenthicate(Cypress.env('username'), Cypress.env('password'))
     cy.validateToastInfo('Augusto')
+    cy.logout()
 });
 
 

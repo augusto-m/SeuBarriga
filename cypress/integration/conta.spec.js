@@ -2,24 +2,48 @@
 
 describe('CRUD de contas', () => {
     
-    beforeEach(() => {
+    let conta = {
+        desc: chance.word( { length: 7 } ),
+        msg: 'Conta inserida com sucesso!'
+    }
+
+    let contaEd = {
+        msg: 'Conta atualizada com sucesso!'
+    }
+
+    let contaDel = {
+        msg: 'Conta excluída'
+    }
+
+
+    before(() => {
         cy.autenthicate()
+    });
+
+
+    beforeEach(() => {
+        cy.resetAllAutomatic()
     });
     
     
     it('criar conta', () => {
-        cy.newAccount('Caixa Econômica', 'Conta inserida com sucesso!')
+        cy.newAccount(conta.desc)
     });
 
 
-    it('editar conta', () => {
-        cy.editAccount('Caixa', 'Banco do Brasil', 'Conta atualizada com sucesso!')
+    it.skip('editar conta', () => {
+        // Aplicação não está mais permitindo alteração
+        cy.editAccount(conta.desc, contaEd.desc, conta.msg, contaEd.msg)
     });
 
     
     it('excluir conta', () => {
-        cy.deleteAccount('Banco do Brasil', 'Conta excluída com sucesso!')
+        cy.deleteAccount(conta.desc, contaDel.msg)
     });
 });
 
+
+after('logout', () => {
+    cy.logout()
+});
 

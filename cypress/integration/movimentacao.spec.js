@@ -3,29 +3,29 @@
 import moment from '/node_modules/moment'
 
 let mov = {
-    dttrans: (moment().format('YYYY-MM-DD')),
-    dtpagam: (moment().add(1, 'days').format('YYYY-MM-DD')),
-    desc: 'movim. teste',
-    inter: ' ',
-    valor: 27,
-    conta: 'Conta com movimentacao'
+    dtTransc: (moment().format('YYYY-MM-DD')),
+    dtPagam: (moment().add(1, 'days').format('YYYY-MM-DD')),
+    desc: chance.word({ length: 7}),
+    inter: chance.word(),
+    valor: chance.natural({ min:1, max: 100 }),
+    conta: 'Conta com movimentacao',
+    propCSS: 'background-color',
+    propCSSRct: 'rgb(233, 241, 225)',
+    propCSSDsp: 'rgb(250, 225, 225)'
 }
 
-let movEdit = {
-    descA: 'teste edicao1.',
-    descB: 'teste edicao2.',
+let movEd = {
+    desc: chance.word(),
     valor: 59,
     conta: 'Conta para alterar'
 }
 
-let movDel = {
-    desc: 'movim p/ deletar'
-}
-
-
 
 before('login e reset',() => {
     cy.autenthicate()
+});
+
+beforeEach(() => {
     cy.resetAllAutomatic()
 });
 
@@ -33,19 +33,21 @@ before('login e reset',() => {
 describe('Testes CRUD movimentacoes', () => {
     
     it('nova movimentacao', () => {
-        cy.newMoviment(mov.dttrans, mov.dtpagam, mov.desc, mov.valor, mov.inter, mov.conta, mov.valor)  
+        cy.newMoviment(mov.dtTransc, mov.dtPagam, mov.desc, mov.valor, mov.inter, mov.conta, mov.valor)  
     });
 
     it('editar movimentacao', () => {
-        cy.editMoviment(mov.dttrans, mov.dtpagam,movEdit.descA, mov.valor, mov.inter, mov.conta,
-            movEdit.descB, movEdit.valor, movEdit.conta) 
+        cy.editMoviment(mov.dtTransc, mov.dtPagam, mov.desc, mov.valor, mov.inter, mov.conta,
+            movEd.desc, movEd.valor, movEd.conta) 
     });
 
     //TODO Analisar como testar decimal. Bug no Cypress.
 
     it('excluir movimentacao', () => {
-        cy.deleteMoviment(mov.dttrans, movDel.desc)     
+        cy.deleteMoviment(mov.dtTransc, mov.desc, mov.valor, mov.inter, mov.conta)     
     });
+
+    //TODO URGENTE Analisar como movimentacao ta sendo criada, sem todos os parametros.
 
 });
 
@@ -53,24 +55,19 @@ describe('Testes CRUD movimentacoes', () => {
 describe('Mais testes movimentacoes', () => {
 
     it('nova receita', () => {
-        cy.newMoviment("2021-02-20", "2021-02-27", 'teste rct', '15', ' ', 'Conta com movimentacao')
-        cy.validateCSSMovimentRct('teste rct', 'background-color', 'rgb(233, 241, 225)')
+        cy.newMoviment(mov.dtTransc, mov.dtPagam, 'teste rct', mov.valor, mov.inter, mov.conta)
+        cy.validateCSSMovimentRct('teste rct', mov.propCSS, mov.propCSSRct)
     });
 
     it('nova despesa', () => {
-        cy.newMoviment("2021-02-20", "2021-02-27", 'teste dsp', '10', ' ', 'Conta com movimentacao')
-        cy.validateCSSMovimentDsp('teste dsp', 'background-color', 'rgb(250, 225, 225)')
+        cy.newMoviment(mov.dtTransc, mov.dtPagam, 'teste dsp', mov.valor, mov.inter, mov.conta)
+        cy.validateCSSMovimentDsp('teste dsp', mov.propCSS, mov.propCSSDsp)
     });
 
     it('Campos obrigatorios nao preenchidos', () => {
-        cy.fieldsNotFilledMovim('desc. moviment.', "2021-02-20")
+        cy.fieldsNotFilledMovim(mov.desc, mov.dtTransc)
     });
 
-
-    it.skip('Teste Moment', () => {   
-        cy.navigateBalance()
-        cy.filterPeriodBalance(moment("20210201", "YYYY/MM/DD").format("YYYY-MM"))
-    });
 })
 
     // Cypress._.times(5, () => {
