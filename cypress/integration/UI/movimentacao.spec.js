@@ -22,7 +22,7 @@ let movEd = {
 
 
 before('login e reset',() => {
-    cy.autenthicate()
+    cy.authenticate()
 });
 
 beforeEach(() => {
@@ -76,6 +76,6 @@ describe('Mais testes movimentacoes', () => {
     // });
     // });
 
-// after('logout', () => {
-//     cy.logout()
-// });
+after('logout', () => {
+    cy.logout()
+});

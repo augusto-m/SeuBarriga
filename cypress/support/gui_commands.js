@@ -38,18 +38,6 @@ Cypress.Commands.add('resetAllAutomatic', () => {
     cy.get('[href="/reset"]').click()
 })
 
-// Cypress.Commands.add('resetMovimentUI', (dtTransc,descMovim) => {
-//     cy.navigateBalance(dtTransc)
-//     cy.get('div[class="list-group"] > li')
-//     if (cy.xpath(("//*[contains(@class, 'container')]/div/div[2]/li//div/div/div/span[contains(.,'") + descMovim + ("')]")) == "teste dsp") {
-//         console.log('1')
-//         //cy.xpath(("//*[contains(@class, 'container')]/div/div[2]/li//div/div/div/span[contains(.,'$(descMovim)')]/../../../div[2]/i[contains(@class, 'far')]")).click()  
-//     }
-//     else {
-//         console.log('2')
-
-//     }
-// })
 
 //TODO Deletar X que nao tenham as descricoes X, Y, Z
 const testeIF = 'div[class="list-group"] > li'
@@ -84,13 +72,13 @@ Cypress.Commands.add('fillLogin', (usuario, senha) => {
     cy.get('input[data-test=passwd]').clear().type(senha)
 })
 
-Cypress.Commands.add('autenthicate', () => {
+Cypress.Commands.add('authenticate', () => {
     cy.visit('')
     cy.fillLogin(Cypress.env('username'), Cypress.env('password'))
     cy.get('.btn').click()
 })
 
-Cypress.Commands.add('autenthicateFail', (usuario, senha) => {
+Cypress.Commands.add('authenticateFail', (usuario, senha) => {
     cy.visit('')
     cy.fillLogin(usuario, senha)
     cy.get('.btn').click()
@@ -122,13 +110,12 @@ Cypress.Commands.add('fillAccount', (descConta) => {
     cy.get('.btn').click()
 })
 
-Cypress.Commands.add('editAccount', (descConta, descEd, mensagem, mensagemSucesso) => {
-    cy.newAccount(descConta, mensagem)
+Cypress.Commands.add('editAccount', (descConta, descEd) => {
+    cy.newAccount(descConta)
     cy.navigateAccount()
     cy.xpath((`//table//td[contains(.,'${descConta}')]/..//i[@class='far fa-edit']`)).click()
     cy.fillAccount(descEd)
-    cy.validateToastSucess(mensagemSucesso)
-    cy.validateAccount(descConta)
+    cy.validateAccount(descEd)
 })
 
 Cypress.Commands.add('deleteAccount', (descConta) => {
@@ -250,15 +237,6 @@ Cypress.Commands.add('navigateBalance', (dtTransc) => {
 Cypress.Commands.add('filterPeriodBalance', (dtTransc) => {
     cy.get('input[type="month"]').type(dtTransc, '{enter}')
 })
- 
-Cypress.Commands.add('calculateBalance', (dtTransc) => {
-    cy.navigateBalance(dtTransc)
-    cy.xpath((`//div[contains(@class, "list-group")]//div/div/div[2]/small[2][contains(.,"Conta para extrato")]//../../div[1]/small`)).contains(1.500)
-    // .then ((el) => {
-    //     expect(el).contains(220)
-    // })
-})
-
 
 
 

@@ -8,6 +8,7 @@ describe('CRUD de contas', () => {
     }
 
     let contaEd = {
+        desc: chance.word({ length: 7}),
         msg: 'Conta atualizada com sucesso!'
     }
 
@@ -17,7 +18,7 @@ describe('CRUD de contas', () => {
 
 
     before(() => {
-        cy.autenthicate()
+        cy.authenticate()
     });
 
 
@@ -31,9 +32,8 @@ describe('CRUD de contas', () => {
     });
 
 
-    it.skip('editar conta', () => {
-        // Aplicação não está mais permitindo alteração
-        cy.editAccount(conta.desc, contaEd.desc, conta.msg, contaEd.msg)
+    it('editar conta', () => {
+        cy.editAccount(conta.desc, contaEd.desc)
     });
 
     
