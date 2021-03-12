@@ -4,7 +4,7 @@ import moment from '/node_modules/moment'
 
 let mov = {
     dtTransc: (moment().format('YYYY-MM-DD')),
-    dtPagam: (moment().add(1, 'days').format('YYYY-MM-DD')),
+    dtPagam: (moment().add(-1, 'days').format('YYYY-MM-DD')),
     desc: chance.word({ length: 7}),
     inter: chance.word(),
     valor: chance.natural({ min:1, max: 100 }),

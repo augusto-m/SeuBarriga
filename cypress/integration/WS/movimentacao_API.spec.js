@@ -1,6 +1,23 @@
 ///<reference types = "Cypress" />
 
+import moment from '/node_modules/moment'
+
+
 let token
+
+let mov = {
+    dtTransc: (moment().add(-2, 'days').format('DD/MM/YYYY')),
+    dtPagam: (moment().format('DD/MM/YYYY')),
+    desc: chance.word({ length: 7}),
+    inter: chance.word(),
+    valor: chance.natural({ min:1, max: 100 }),
+    conta: 'Conta com movimentacao',
+    propCSS: 'background-color',
+    propCSSRct: 'rgb(233, 241, 225)',
+    propCSSDsp: 'rgb(250, 225, 225)'
+}
+
+//TODO refazer essas variáveis do zero (praticar Moment)
 
 before(() => {
     cy.getToken()
@@ -10,14 +27,14 @@ before(() => {
 });
 
 beforeEach(() => {
-    cy.reserRest()
+    // cy.reserRest()
 });
 
 
 describe('Testes CRUD movimentacoes pela API', () => {
     
     it.only('nova movimentacao', () => {
-        cy.newMovimentAPI(mov.dtTransc, mov.dtPagam, mov.desc, mov.valor, mov.inter, mov.conta, mov.valor)  
+        cy.newMovimentAPI(token, mov.dtTransc, mov.dtPagam, mov.desc, mov.valor, mov.inter, mov.conta, mov.valor)  
     });
 
     it('editar movimentacao', () => {
