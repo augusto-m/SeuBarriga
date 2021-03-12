@@ -1,22 +1,21 @@
 /// <reference types = "Cypress" />
 
+let conta = {
+    desc: chance.word( { length: 7 } ),
+    msg: 'Conta inserida com sucesso!'
+}
+
+let contaEd = {
+    desc: chance.word({ length: 7}),
+    msg: 'Conta atualizada com sucesso!'
+}
+
+let contaDel = {
+    msg: 'Conta excluída'
+}
+
 describe('CRUD de contas', () => {
     
-    let conta = {
-        desc: chance.word( { length: 7 } ),
-        msg: 'Conta inserida com sucesso!'
-    }
-
-    let contaEd = {
-        desc: chance.word({ length: 7}),
-        msg: 'Conta atualizada com sucesso!'
-    }
-
-    let contaDel = {
-        msg: 'Conta excluída'
-    }
-
-
     before(() => {
         cy.authenticate()
     });
@@ -32,7 +31,7 @@ describe('CRUD de contas', () => {
     });
 
 
-    it('editar conta', () => {
+    it.only('editar conta', () => {
         cy.editAccount(conta.desc, contaEd.desc)
     });
 

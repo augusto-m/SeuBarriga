@@ -135,8 +135,27 @@ Cypress.Commands.add('validateAccountNotExistAPI', (token, nomeConta) => {
 
 // Movimentações
 
-Cypress.Commands.add('newMoviment', (dtTransc, dtpagam, descMovim, valor, inter, conta) => {
+Cypress.Commands.add('newMoviment', (dtTransc, dtpagam, descMovim, valor, inter) => {
+    cy.request({
+        method: 'POST',
+        url: 'https://barrigarest.wcaquino.me/transacoes',
+        headers: {
+            Authorization: `JWD ${token}`
+        },
+        body: {
+            conta_id: 467661,
+            data_pagamento: dtTransc,
+            data_transacao: dtpagam,
+            descricao: descMovim,
+            envolvido: inter,
+            status: false,
+            tipo: "REC",
+            valor: valor,
+        }        
+    })
 })
+
+//TODO Refatorar ID da conta, status e e tipo.
 
 Cypress.Commands.add('editMoviment', (dtTransc, dtpagam, atualMovim, atualValor, inter, atualConta, novaMovim, novoValor, novaConta) => {
 })

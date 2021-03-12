@@ -7,7 +7,7 @@ const conta = {
     nomeAlt: chance.word( {length : 7} )
 }
 
-describe('CRUD de contas', () => {
+describe('CRUD de contas pela API', () => {
     
     before(() => {
         cy.getToken().then( tkn => {
