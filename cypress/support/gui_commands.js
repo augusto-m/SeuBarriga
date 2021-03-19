@@ -90,6 +90,7 @@ Cypress.Commands.add('logout', () => {
 })
 
 
+
 //------------------------------------------------//------------------------------------------------//
 
 // Contas
@@ -237,7 +238,4 @@ Cypress.Commands.add('navigateBalance', (dtTransc) => {
 Cypress.Commands.add('filterPeriodBalance', (dtTransc) => {
     cy.get('input[type="month"]').type(dtTransc, '{enter}')
 })
-
-
-
 

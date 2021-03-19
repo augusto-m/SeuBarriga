@@ -135,47 +135,74 @@ Cypress.Commands.add('validateAccountNotExistAPI', (token, nomeConta) => {
 
 // Movimentações
 
-Cypress.Commands.add('newMovimentAPI', (token, dtTransc, dtpagam, descMovim, valor, inter) => {
-    cy.request({
-        method: 'POST',
-        url: 'https://barrigarest.wcaquino.me/transacoes',
-        
-        headers: {
-            Authorization: `JWT ${token}`
-        },
-        body: {
-            conta_id: 467661,
-            data_pagamento: dtTransc,
-            data_transacao: dtpagam,
-            descricao: descMovim,
-            envolvido: inter,
-            status: false,
-            tipo: "REC",
-            valor: valor,
-        }        
-    })
+Cypress.Commands.add('newMovimentAPI', (token, nomeConta, dtTransc, dtPagam, descMovim, inter, valor) => {
+    cy.newAccountAPI(token, nomeConta)
+    cy.filterAccountAPI (token, nomeConta)
+    .its('body.0.id').should('exist')
+     .then(idCon => {
+        cy.request({
+            method: 'POST',
+            url: 'https://barrigarest.wcaquino.me/transacoes',
+            headers: {
+                Authorization: `JWT ${token}`
+            },
+            body: {
+                conta_id: idCon,
+                data_pagamento: dtTransc,
+                data_transacao: dtPagam,
+                descricao: descMovim,
+                envolvido: inter,
+                status: false,
+                tipo: "REC",
+                valor: valor
+            }
+        }).as('response')
+        cy.get('@response').then(
+            res => {
+                expect(res.body.id).to.be.exist
+                expect(res.body.descricao).to.be.equal(descMovim)
+            }
+        )        
+     })
 })
 
 //TODO colocar asserções
 //TODO Refatorar ID da conta, status e e tipo.
 
-Cypress.Commands.add('editMoviment', (dtTransc, dtpagam, atualMovim, atualValor, inter, atualConta, novaMovim, novoValor, novaConta) => {
+Cypress.Commands.add('editMovimentAPI', (token, nomeConta, dtTransc, dtPagam, descMovim, inter, valor, novaDesc, novoValor) => {
+    cy.newMovimentAPI(token, nomeConta, dtTransc, dtPagam, descMovim, inter, valor)
+    .then( res => {
+        console.log(res)
+        cy.request({
+            method: 'PUT',
+            url: `https://barrigarest.wcaquino.me/transacoes/${res.body.id}`, 
+            body: {
+                conta_id: res.body.conta_id,
+                data_pagamento: dtPagam,
+                data_transacao: dtTransc,
+                descricao: novaDesc,
+                envolvido: res.body.envolvido,
+                observacao: res.body.observacao,
+                parcelamento_id: res.body.parcelamento_id,
+                status: res.body.status,
+                tipo: res.body.tipo,
+                transferencia_id: res.body.transferencia_id,
+                usuario_id: res.body.usuario_id,
+                valor: novoValor,
+            },
+            headers: {
+                Authorization: `JWT ${token}`
+            }
+        }).should((res => {
+            expect(res.status).to.be.equal(200)
+            expect(res.body.descricao).to.be.equals(novaDesc)
+            expect(parseInt(res.body.valor)).to.be.equals(novoValor)
+        }))
+    })
 })
 
 Cypress.Commands.add('deleteMoviment', (dtTransc, descMovim, valor, inter, conta) => {
 })
 
-Cypress.Commands.add('validateMovimNotExist', (dtTransc, descMovim) => {
-})
-
-Cypress.Commands.add('validateCSSMovimentRct', (descMovim, propriedadeCSS, valorCSS) => {
-})
-
-Cypress.Commands.add('validateCSSMovimentDsp', (descMovim, propriedadeCSS, valorCSS) => {
-})
-
 Cypress.Commands.add('validateOnlyMovim', (descMovim, valor, dtTransc) => {
-})
-
-Cypress.Commands.add('fieldsNotFilledMovim', (descMovim, dtTransc) => {
 })
