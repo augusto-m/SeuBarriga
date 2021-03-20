@@ -11,10 +11,10 @@ let mov = {
     desc: chance.word({ length: 7}),
     inter: chance.word(),
     valor: chance.natural({ min:1, max: 100 }),
+    contaNova: 'contaAPI',
     conta: 'Conta com movimentacao',
-    propCSS: 'background-color',
-    propCSSRct: 'rgb(233, 241, 225)',
-    propCSSDsp: 'rgb(250, 225, 225)'
+    tipoRec: 'REC',
+    tipoDesp: 'DESP'
 }
 
 
@@ -38,43 +38,32 @@ beforeEach(() => {
 describe('Testes CRUD movimentacoes pela API', () => {
     
     it('nova movimentacao', () => {
-        cy.newMovimentAPI(token, 'contaAPI', mov.dtTransc, mov.dtPagam, mov.desc, mov.inter, mov.valor)  
+        cy.newMovimentAPI(token, mov.contaNova, mov.dtTransc, mov.dtPagam, mov.desc, mov.inter, mov.tipoRec, mov.valor)  
     });
 
-    it.only('editar movimentacao', () => {
-        cy.editMovimentAPI(token, 'contaAPI', mov.dtTransc, mov.dtPagam, mov.desc, mov.inter, mov.valor, movEd.desc, movEd.valor) 
+    it('editar movimentacao', () => {
+        cy.editMovimentAPI(token, mov.contaNova, mov.dtTransc, mov.dtPagam, mov.desc, mov.inter, mov.tipoRec, mov.valor, movEd.desc, movEd.valor) 
     });
 
     //TODO Analisar como testar decimal. Bug no Cypress.
 
     it('excluir movimentacao', () => {
-        // cy.deleteMovimentAPI(mov.dtTransc, mov.desc, mov.valor, mov.inter, mov.conta)     
+        cy.deleteMovimentAPI(token, mov.contaNova, mov.dtTransc, mov.dtPagam, mov.desc, mov.inter, mov.tipoRec, mov.valor)     
     });
-
-    //TODO URGENTE Analisar como movimentacao ta sendo criada, sem todos os parametros.
-
 });
 
 
 describe('Mais testes movimentacoes', () => {
 
     it('nova receita', () => {
-        // cy.newMovimentAPI(mov.dtTransc, mov.dtPagam, 'teste rct', mov.valor, mov.inter, mov.conta)
-        // cy.validateCSSMovimentRct('teste rct', mov.propCSS, mov.propCSSRct)
+        cy.newMovimentAPI(token, mov.contaNova, mov.dtTransc, mov.dtPagam, mov.desc, mov.inter, mov.tipoRec, mov.valor)
     });
 
     it('nova despesa', () => {
-        // cy.newMovimentAPI(mov.dtTransc, mov.dtPagam, 'teste dsp', mov.valor, mov.inter, mov.conta)
-        // cy.validateCSSMovimentDsp('teste dsp', mov.propCSS, mov.propCSSDsp)
+        cy.newMovimentAPI(token, mov.contaNova, mov.dtTransc, mov.dtPagam, mov.desc, mov.inter, mov.tipoDesp, mov.valor)
     });
 
-    it('Campos obrigatorios nao preenchidos', () => {
-        // cy.fieldsNotFilledMovimAPI(mov.desc, mov.dtTransc)
+    it.only('Campos obrigatorios nao preenchidos', () => {
+        cy.fieldsNotFilledMovimAPI(token, mov.contaNova)
     });
-
-    // Cypress._.times(5, () => {
-    // it.only('teste repeticao', () => {
-    //     cy.newMoviment("2021-02-20", "2021-02-27", 'teste rct', '15', ' ', 'Conta com movimentacao')        
-    // });
-    // });
 })
