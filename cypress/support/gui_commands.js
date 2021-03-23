@@ -181,6 +181,7 @@ Cypress.Commands.add('editMoviment', (dtTransc, dtpagam, atualMovim, atualValor,
 Cypress.Commands.add('deleteMoviment', (dtTransc, descMovim, valor, inter, conta) => {
     cy.newMoviment(dtTransc, dtTransc, descMovim, valor, inter, conta)
     cy.navigateBalance(dtTransc)
+               //*div[contains(.,'container')]
     cy.xpath((`//*[contains(@class, 'container')]/div/div[2]/li//div/div/div/span[contains(.,'${descMovim}')]/../../../div[2]/i[contains(@class, 'far')]`)).click()
     cy.validateToastSucess('sucesso')
     cy.validateMovimNotExist(dtTransc, descMovim)
@@ -237,5 +238,50 @@ Cypress.Commands.add('navigateBalance', (dtTransc) => {
 
 Cypress.Commands.add('filterPeriodBalance', (dtTransc) => {
     cy.get('input[type="month"]').type(dtTransc, '{enter}')
+})
+
+
+Cypress.Commands.add('calculateBalance', (dtTransc, conta) => {
+    let total = 0.00
+    cy.navigateBalance(dtTransc)
+        cy.xpath(`//*[contains(@class, "list-group")]/li/div/div/div[2]/small[2][contains(.,'${conta}')]/../../div[1]/small`).as('teste')
+        .invoke('text')
+        .each(res => {
+        parseFloat(res)
+        total = total + parseInt (res)
+    })
+    .then(resultado => {
+        console.log(resultado)
+    })
+})
+
+
+Cypress.Commands.add('calculateBalance2', (dtTransc, conta) => {
+const attrList = []
+let total = 0
+    cy.navigateBalance(dtTransc)
+        cy.xpath(`//*[contains(@class, "list-group")]/li/div/div/div[2]/small[2][contains(.,'${conta}')]/../../div[1]/small`)
+        .each($el => {
+            cy.wrap($el)
+            .invoke('text')
+            .then(lid => {
+                attrList.push(lid)
+            })  
+        })
+        cy.wrap(attrList).each(res => {
+//            res.replace('-R$', '')
+            //return parseFloat(res)
+            res.replace('-R$', '')
+            total = total + parseFloat(res)
+            console.log(total)
+        })
+        // .then(res => {
+        //     console.log(res)
+        //})
+        // .then(res => {
+        //     //return res
+        //     console.log(res)
+        // })
+        //console.log(attrList)
 })
 

@@ -70,12 +70,16 @@ describe('Mais testes movimentacoes', () => {
 
 })
 
+it.only('calculateBalance2', () => {
+    cy.calculate('202103', 'Conta para saldo')
+});
+
     // Cypress._.times(5, () => {
     // it.only('teste repeticao', () => {
     //     cy.newMoviment("2021-02-20", "2021-02-27", 'teste rct', '15', ' ', 'Conta com movimentacao')        
     // });
     // });
 
-after('logout', () => {
-    cy.logout()
-});
+// after('logout', () => {
+//     cy.logout()
+// });
