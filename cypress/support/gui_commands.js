@@ -244,7 +244,7 @@ Cypress.Commands.add('filterPeriodBalance', (dtTransc) => {
 Cypress.Commands.add('calculateBalance', (dtTransc, conta) => {
     let total = 0.00
     cy.navigateBalance(dtTransc)
-        cy.xpath(`//*[contains(@class, "list-group")]/li/div/div/div[2]/small[2][contains(.,'${conta}')]/../../div[1]/small`).as('teste')
+        cy.xpath(`//*[contains(@class, "list-group")]/li/div/div/div[2]/small[2][contains(.,'${conta}')]/../../div[1]/small`)
         .invoke('text')
         .each(res => {
         parseFloat(res)

@@ -70,8 +70,8 @@ describe('Mais testes movimentacoes', () => {
 
 })
 
-it.only('calculateBalance2', () => {
-    cy.calculate('202103', 'Conta para saldo')
+it.only('Calcular saldo das contas', () => {
+    cy.calculateBalance('202103', 'Conta para saldo')
 });
 
     // Cypress._.times(5, () => {
